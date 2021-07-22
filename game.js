@@ -6,16 +6,10 @@ userClickedPattern = [];
 // An array that contains the colours of the buttons
 buttonColours = ["red", "blue", "green", "yellow"];
 
-// Function that runs the game
-function nextSequence() {}
-
 function randomNumberGenerator() {
   var randomNumber = Math.floor(Math.random() * 4);
   return randomNumber;
 }
-
-// Generate a random Number
-randomNumber = randomNumberGenerator();
 
 // Function that picks an element from the array from a specific index
 function pickElementFromArray(array, index, count) {
@@ -24,38 +18,64 @@ function pickElementFromArray(array, index, count) {
   return arrElement;
 }
 
-// Pick one random colour from the array (based on the randomly generated number)
-randomChosenColour = pickElementFromArray(buttonColours, randomNumber, 1);
-
-// Add the randomChosenColour to the end of gamePattern array
-gamePattern.push(randomChosenColour);
-
 function flashAnimation(element) {
   element.fadeOut(100).fadeIn(100);
 }
-
-// Select a button with the same id as the randomChosenColour
-var selectedButton = $("#" + randomChosenColour);
-
-// Add flash animation to the selected element
-flashAnimation(selectedButton);
 
 function playSound(colour) {
   var audio = new Audio("sounds/" + colour + ".mp3");
   audio.play();
 }
 
-playSound(randomChosenColour);
+function determineClickedButton() {
+  var clickedButton = $(".btn").on("click", function () {
+    $(this).attr("id");
+  });
 
-// Detect which button is clicked and trigger a function
-$(".btn").on("click", function () {
-  // Select the id attribute of the clicked button
-  var userChosenColour = $(this).attr("id");
+  return clickedButton;
+}
 
-  playSound(userChosenColour);
+function animatePress(currentButton) {
+  // Add the CSS class pressed
+  $(currentButton).addClass("pressed");
 
-  // add the current button's id to the userClickedPattern array
-  userClickedPattern.push(userChosenColour);
+  // Remove the CSS class pressed after 100 milliseconds
+  setTimeout(function () {
+    $(currentButton).removeClass("pressed");
+  }, 100);
+}
 
-  console.log(userClickedPattern);
-});
+// Function that runs the game
+function playGame() {
+  // Generate a random Number
+  randomNumber = randomNumberGenerator();
+
+  // Pick one random colour from the array (based on the randomly generated number)
+  randomChosenColour = pickElementFromArray(buttonColours, randomNumber, 1);
+
+  // Add the randomChosenColour to the end of gamePattern array
+  gamePattern.push(randomChosenColour);
+
+  // Select a button with the same id as the randomChosenColour
+  var randomSelectedButton = $("#" + randomChosenColour);
+
+  // Add flash animation to the selected element
+  flashAnimation(randomSelectedButton);
+
+  // Play sound for the randomly selected button
+  playSound(randomChosenColour);
+
+  // Detect which button is clicked and trigger a function
+  $(".btn").on("click", function () {
+    var userChosenColour = $(this).attr("id");
+
+    playSound(userChosenColour);
+
+    // add the current button's id to the userClickedPattern array
+    userClickedPattern.push(userChosenColour);
+
+    animatePress(this);
+  });
+}
+
+playGame();
