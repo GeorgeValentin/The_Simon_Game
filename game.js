@@ -79,7 +79,8 @@ function checkAnswer(currentLevel) {
     // Change the h1 text to the following message
     $("#level-title").text("Game Over, Press Any Key to Restart");
 
-    console.log("wrong");
+    // When we answer wrong restart the game
+    restartGame();
   }
 }
 
@@ -112,4 +113,11 @@ function animatePress(currentButton) {
   setTimeout(function () {
     $("#" + currentButton).removeClass("pressed");
   }, 100);
+}
+
+// Function that restarts the game
+function restartGame() {
+  level = 0;
+  gamePattern = [];
+  gameStarted = false;
 }
