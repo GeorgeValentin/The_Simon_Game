@@ -6,6 +6,8 @@ userClickedPattern = [];
 // An array that contains the colours of the buttons
 buttonColours = ["red", "blue", "green", "yellow"];
 
+var level = 0;
+
 function randomNumberGenerator() {
   var randomNumber = Math.floor(Math.random() * 4);
   return randomNumber;
@@ -75,7 +77,20 @@ function playGame() {
     userClickedPattern.push(userChosenColour);
 
     animatePress(this);
+
+    // Increase the level every time a click happens
+    level++;
+
+    // When the game starts change the text to say Level 0
+    $("#level-title").text("Level " + level);
   });
+
+  gameStarted = true;
+
+  $("#level-title").text("Level " + level);
 }
 
-playGame();
+var gameStarted = false;
+
+// Start the game when a key is pressed
+$(document).keydown(playGame);
