@@ -1,32 +1,35 @@
-// An empty array
-gamePattern = [];
-
-userClickedPattern = [];
-
 // An array that contains the colours of the buttons
 buttonColours = ["red", "blue", "green", "yellow"];
 
+// Empty arrays
+gamePattern = [];
+userClickedPattern = [];
+
+var gameStarted = false;
 var level = 0;
+
+$(document).keydown(function () {
+  if (!gameStarted) {
+    $("#level-title").text("Level " + level);
+    nextSequence();
+    gameStarted = true;
+  }
+});
 
 function randomNumberGenerator() {
   var randomNumber = Math.floor(Math.random() * 4);
+
   return randomNumber;
 }
 
-// Function that picks an element from the array from a specific index
-function pickElementFromArray(array, index, count) {
-  var arrElement = array.splice(index, count);
+function selectColourID(randomColour) {
+  var selectedColour = $("#" + randomColour);
 
-  return arrElement;
+  return selectedColour;
 }
 
 function flashAnimation(element) {
   element.fadeOut(100).fadeIn(100);
-}
-
-function playSound(colour) {
-  var audio = new Audio("sounds/" + colour + ".mp3");
-  audio.play();
 }
 
 function determineClickedButton() {
@@ -37,60 +40,62 @@ function determineClickedButton() {
   return clickedButton;
 }
 
-function animatePress(currentButton) {
-  // Add the CSS class pressed
-  $(currentButton).addClass("pressed");
+// Detect which button is clicked and trigger a function
+$(".btn").click(function () {
+  var userChosenColour = $(this).attr("id");
+  userClickedPattern.push(userChosenColour);
 
-  // Remove the CSS class pressed after 100 milliseconds
-  setTimeout(function () {
-    $(currentButton).removeClass("pressed");
-  }, 100);
+  playSound(userChosenColour);
+  animatePress(userChosenColour);
+
+  checkAnswer(userClickedPattern.length - 1);
+});
+
+function checkAnswer(currentLevel) {
+  console.log(gamePattern[currentLevel]);
+  console.log(userClickedPattern[currentLevel]);
+  if (gamePattern[currentLevel] == userClickedPattern[currentLevel]) {
+    console.log("success");
+
+    if (userClickedPattern.length == gamePattern.length) {
+      setTimeout(function () {
+        nextSequence();
+      }, 1000);
+    }
+  } else {
+    console.log("wrong");
+  }
 }
 
 // Function that runs the game
-function playGame() {
-  // Generate a random Number
-  randomNumber = randomNumberGenerator();
+function nextSequence() {
+  userClickedPattern = [];
 
-  // Pick one random colour from the array (based on the randomly generated number)
-  randomChosenColour = pickElementFromArray(buttonColours, randomNumber, 1);
+  level++;
+  $("#level-title").text("Level " + level);
 
-  // Add the randomChosenColour to the end of gamePattern array
+  var randomNumber = randomNumberGenerator();
+  var randomChosenColour = buttonColours[randomNumber];
   gamePattern.push(randomChosenColour);
 
-  // Select a button with the same id as the randomChosenColour
-  var randomSelectedButton = $("#" + randomChosenColour);
+  var randomColourId = selectColourID(randomChosenColour);
 
-  // Add flash animation to the selected element
-  flashAnimation(randomSelectedButton);
+  flashAnimation(randomColourId);
 
-  // Play sound for the randomly selected button
   playSound(randomChosenColour);
-
-  // Detect which button is clicked and trigger a function
-  $(".btn").on("click", function () {
-    var userChosenColour = $(this).attr("id");
-
-    playSound(userChosenColour);
-
-    // add the current button's id to the userClickedPattern array
-    userClickedPattern.push(userChosenColour);
-
-    animatePress(this);
-
-    // Increase the level every time a click happens
-    level++;
-
-    // When the game starts change the text to say Level 0
-    $("#level-title").text("Level " + level);
-  });
-
-  gameStarted = true;
-
-  $("#level-title").text("Level " + level);
 }
 
-var gameStarted = false;
+function playSound(name) {
+  var audio = new Audio("sounds/" + name + ".mp3");
+  audio.play();
+}
 
-// Start the game when a key is pressed
-$(document).keydown(playGame);
+function animatePress(currentButton) {
+  // Add the CSS class pressed
+  $("#" + currentButton).addClass("pressed");
+
+  // Remove the CSS class pressed after 100 milliseconds
+  setTimeout(function () {
+    $("#" + currentButton).removeClass("pressed");
+  }, 100);
+}
