@@ -29,6 +29,19 @@ randomChosenColour = pickElementFromArray(buttonColours, randomNumber, 1);
 // Add the randomChosenColour to the end of gamePattern array
 gamePattern.push(randomChosenColour);
 
-console.log(gamePattern);
+// Select a button with the same id as the randomChosenColour
+var selectedButton = $("#" + randomChosenColour);
 
-console.log(randomChosenColour);
+function flashAnimation(element) {
+  element.fadeOut(100).fadeIn(100);
+}
+
+// Add flash animation to the selected element
+flashAnimation(selectedElem);
+
+function determineSound(randomColour) {
+  var audio = new Audio("sounds/" + randomColour + ".mp3");
+  audio.play();
+}
+
+determineSound(randomChosenColour);
