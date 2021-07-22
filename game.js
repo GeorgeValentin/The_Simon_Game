@@ -37,7 +37,7 @@ function flashAnimation(element) {
 }
 
 // Add flash animation to the selected element
-flashAnimation(selectedElem);
+flashAnimation(selectedButton);
 
 function determineSound(randomColour) {
   var audio = new Audio("sounds/" + randomColour + ".mp3");
@@ -45,3 +45,14 @@ function determineSound(randomColour) {
 }
 
 determineSound(randomChosenColour);
+
+// Detect which button is clicked and trigger a function
+$(".btn").on("click", function () {
+  // Select the id attribute of the clicked button
+  var userChosenColour = $(this).attr("id");
+
+  // add the current button's id to the userClickedPattern array
+  userClickedPattern.push(userChosenColour);
+
+  console.log(userClickedPattern);
+});
